@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Lineup Counter">
 <meta name="theme-color" content="#2e5339">
-<title>Lineup Counter â GJTC BBAIR</title>
+<title>Lineup Counter — GJTC BBAIR</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -122,7 +122,7 @@
 <body>
 
 <h1>Lineup Counter</h1>
-<p class="sub">GJTC BBAIR â Spring 2026</p>
+<p class="sub">GJTC BBAIR — Spring 2026</p>
 
 <div class="card hw" id="hw">
   <div class="hw-t">How to use at the courts:</div>
@@ -130,9 +130,9 @@
     <li>Tap the <strong>5 players who showed up</strong> today</li>
     <li>Pick which opponent team you're playing</li>
     <li>When you see their lineup card, tap their players into the Singles, D1, and D2 slots</li>
-    <li>Hit <strong>Generate</strong> â the algorithm tests every possible lineup combo and shows the one most likely to win the match 2-1 or 3-0</li>
+    <li>Hit <strong>Generate</strong> — the algorithm tests every possible lineup combo and shows the one most likely to win the match 2-1 or 3-0</li>
   </ol>
-  <p class="hw-x" onclick="document.getElementById('hw').classList.add('hidden')">Got it â</p>
+  <p class="hw-x" onclick="document.getElementById('hw').classList.add('hidden')">Got it ✕</p>
 </div>
 
 <div class="card">
@@ -145,7 +145,7 @@
   <div class="st"><span class="sn">2</span>Which team are you playing?</div>
   <div id="teams"></div>
   <div class="kn hidden" id="kb">
-    <div class="kl">Their roster â color = how dangerous they are:</div>
+    <div class="kl">Their roster — color = how dangerous they are:</div>
     <div id="kl"></div>
     <div style="font-size:10px;color:#aaa;margin-top:6px"><span style="color:#c62828">Red = dangerous</span> &nbsp; <span style="color:#e65100">Orange = average</span> &nbsp; <span style="color:#2e7d32">Green = beatable</span></div>
     <div class="ar">
@@ -179,15 +179,15 @@
     <summary>How the strength ratings work</summary>
     <div class="dp-body">
       Each player has a <b>strength value</b> (0 to 1) calculated from three data sources:
-      <br>â¢ <b>Game win %</b> (40% weight) â most granular indicator. A player who loses 7-5, 7-6 is very different from 6-0, 6-1.
-      <br>â¢ <b>Dynamic rating</b> (30% weight) â TennisRecord.com's ELO-style estimate based on who you beat.
-      <br>â¢ <b>Match win %</b> (30% weight) â straight W-L record.
-      <br><br><b>Level adjustment:</b> Ashley Rossman's 2025 record (4-11) was entirely at 3.0 level against much stronger opponents (DR 2.48-2.98). Her 2.5-level record is 10-6 (62.5%) â that's what we use.
+      <br>• <b>Game win %</b> (40% weight) — most granular indicator. A player who loses 7-5, 7-6 is very different from 6-0, 6-1.
+      <br>• <b>Dynamic rating</b> (30% weight) — TennisRecord.com's ELO-style estimate based on who you beat.
+      <br>• <b>Match win %</b> (30% weight) — straight W-L record.
+      <br><br><b>Level adjustment:</b> Ashley Rossman's 2025 record (4-11) was entirely at 3.0 level against much stronger opponents (DR 2.48-2.98). Her 2.5-level record is 10-6 (62.5%) — that's what we use.
       <br><br><b>Blending:</b> 2026 results get 15% weight (small sample), career stats at the correct level get primary weight. DR normalization maps the 2.0-2.5 range for this league.
       <br><br><b>Head-to-head:</b> Where available, scouting notes include specific past matchups between our players and theirs.
-      <br><br><b>Win probability model:</b> Equal strength = 50/50. A 0.10 strength edge â 62% win chance. A 0.20 edge â 73%. Doubles averages both players with a small chemistry bonus when two top-5 players pair.
+      <br><br><b>Win probability model:</b> Equal strength = 50/50. A 0.10 strength edge ≈ 62% win chance. A 0.20 edge ≈ 73%. Doubles averages both players with a small chemistry bonus when two top-5 players pair.
       <br><br><b>Data source:</b> TennisRecord.com profiles, match histories, and team pages. All stats verified with exact DR values to 4 decimal places.
-      <br><b>Last updated:</b> April 8, 2026 (deep data dive â full names, exact DRs, level-adjusted stats, Marian Nelson 2026 update).
+      <br><b>Last updated:</b> April 8, 2026 (deep data dive — full names, exact DRs, level-adjusted stats, Marian Nelson 2026 update).
     </div>
   </details>
 </div>
@@ -196,7 +196,7 @@
 
 <script>
 // ============================================================
-// PLAYER DATA â DATA-DRIVEN STRENGTH VALUES
+// PLAYER DATA — DATA-DRIVEN STRENGTH VALUES
 // ============================================================
 // v = composite strength (0-1 scale)
 // Formula: 40% game win%, 30% dynamic rating, 30% match win%
@@ -207,7 +207,7 @@
 // Source: TennisRecord.com profiles + match histories, pulled April 8 2026.
 // 2026 Week 1 results incorporated (3/30: BBAIR 2-1 TPETERS).
 // Deep data dive 4/8/26: Full names, exact DRs, level-adjusted stats from TennisRecord.
-// Ashley's '25 record (4-11) was ALL at 3.0 level â excluded from 2.5 strength calc.
+// Ashley's '25 record (4-11) was ALL at 3.0 level — excluded from 2.5 strength calc.
 // Katie & Kristin now have real data (were incorrectly listed as "no data").
 
 const P=[
@@ -222,7 +222,7 @@ const P=[
 ];
 
 // ============================================================
-// OPPONENT DATA â PER-PLAYER STRENGTH VALUES
+// OPPONENT DATA — PER-PLAYER STRENGTH VALUES
 // ============================================================
 // Each opponent has individual v (strength) instead of just tier buckets.
 // t = tier label for color coding: s(strong/red), m(mid/orange), w(weak/green)
@@ -236,23 +236,23 @@ const P=[
 // D2: Sharla Skillicorn+Melissa Hoaglund(B) d. DoughertyLake+Scholl(T) 6-2 1-6 1-0
 // 4/6 BBAIR vs ABEAGLEY scores not yet entered on TennisRecord.
 // RWILLIAMS vs ABEAGLEY 3/30 scores not yet on TennisRecord.
-// Marian Nelson (Ari): 2026 data from CSRC ANDERSON â 1-1, lost S1 1-6,1-6 on 4/4.
+// Marian Nelson (Ari): 2026 data from CSRC ANDERSON — 1-1, lost S1 1-6,1-6 on 4/4.
 
 const O={
   Tia:[
     {n:"Connie Moore",        t:"s", v:0.584, info:"3/30: Won S1 6-2,6-0 (beat Kristin). '25:12-6(67%). Their go-to singles weapon."},
-    {n:"Jacqueline Biddison", t:"s", v:0.573, info:"3/30: Lost D1 2-6,2-6 (w/Kirby vs Jamie+Ashley â bad pairing). '25:8-3(73%). Still dangerous with right partner."},
+    {n:"Jacqueline Biddison", t:"s", v:0.573, info:"3/30: Lost D1 2-6,2-6 (w/Kirby vs Jamie+Ashley — bad pairing). '25:8-3(73%). Still dangerous with right partner."},
     {n:"Jane Dougherty-Lake", t:"s", v:0.559, info:"3/30: Lost D2 but won set 2 (w/Scholl 2-6,6-1,0-1). '25:9-5(64%). Fights hard in 3-setters."},
     {n:"Kimberly Haupt",      t:"s", v:0.552, info:"'25:6-5(55%). DR 2.25. No 2026 data yet. Solid and consistent."},
     {n:"Theresa Scholl",      t:"m", v:0.534, info:"3/30: Lost D2 but won set 2 (w/DL 2-6,6-1,0-1). DR 2.25 but '25:7-11(39%)."},
-    {n:"Tia Peters",          t:"m", v:0.498, info:"'25:11-5(69%). 3-set specialist â came back from 0-6 starts. Didn't play 3/30."},
+    {n:"Tia Peters",          t:"m", v:0.498, info:"'25:11-5(69%). 3-set specialist — came back from 0-6 starts. Didn't play 3/30."},
     {n:"Stephanie Kirby",     t:"m", v:0.399, info:"3/30: Lost D1 2-6,2-6 (w/Biddison vs Jamie+Ashley). '25:6-12(33%). Weakest active player."},
     {n:"Tori Thompson",       t:"w", v:0.374, info:"DR 2.16 but zero match data in this league. Complete unknown."}
   ],
   Renee:[
     {n:"Christine Wesolowski",t:"m", v:0.534, info:"'25:4-0(100%). Small sample but undefeated. No 2026 data yet."},
     {n:"Renee Williams",      t:"m", v:0.489, info:"Captain. DR 2.25. No TennisRecord match data. H2H: beat Sharla+Katie 6-4,6-4 ('25)."},
-    {n:"Tracy Frigetto",      t:"m", v:0.465, info:"Career:4-9(31%). DR 2.25 misleading â loses more than she wins."},
+    {n:"Tracy Frigetto",      t:"m", v:0.465, info:"Career:4-9(31%). DR 2.25 misleading — loses more than she wins."},
     {n:"Stacey Marshall",     t:"w", v:0.381, info:"Career: 0-15 (0%). Zero wins ALL-TIME. Auto-target."},
     {n:"Loreta Silverio",     t:"w", v:0.350, info:"No rating, no data. Brand new player."},
     {n:"Darcy Case",          t:"w", v:0.299, info:"'25:0-4(0%). Moved down from 3.0 and still struggling."},
@@ -260,8 +260,8 @@ const O={
     {n:"Katie Sullivan",      t:"w", v:0.250, info:"No local data. H2H: Jamie+Kristin beat her 6-2,7-5 ('25)."}
   ],
   Ari:[
-    {n:"Marian Nelson",       t:"s", v:0.650, info:"DR 2.40 â highest in league. '26 update: Won D1 4/2 (0-6,6-2,1-0 w/Gilmore) but LOST S1 4/4 (1-6,1-6) on diff team. Beatable in singles."},
-    {n:"Crystal Murphy",      t:"m", v:0.416, info:"'25:1-9(10%). Was 7-4 in '24 â massive decline. No 2026 data yet."},
+    {n:"Marian Nelson",       t:"s", v:0.650, info:"DR 2.40 — highest in league. '26 update: Won D1 4/2 (0-6,6-2,1-0 w/Gilmore) but LOST S1 4/4 (1-6,1-6) on diff team. Beatable in singles."},
+    {n:"Crystal Murphy",      t:"m", v:0.416, info:"'25:1-9(10%). Was 7-4 in '24 — massive decline. No 2026 data yet."},
     {n:"Dilara Kilinc",       t:"w", v:0.350, info:"No rating, no history. Complete unknown."},
     {n:"Kristi Moore",        t:"w", v:0.350, info:"No local match data. Unknown."},
     {n:"Sarah Moynihan",      t:"w", v:0.350, info:"No match history. Brand new."},
@@ -273,10 +273,10 @@ const O={
 let av=[],tm="",cu=[],pk={s:"",a:"",b:"",c:"",d:""};
 const SL=[
   {id:"s",lb:"Their Singles player"},
-  {id:"a",lb:"Their Doubles 1 â Player A"},
-  {id:"b",lb:"Their Doubles 1 â Player B"},
-  {id:"c",lb:"Their Doubles 2 â Player A"},
-  {id:"d",lb:"Their Doubles 2 â Player B"}
+  {id:"a",lb:"Their Doubles 1 — Player A"},
+  {id:"b",lb:"Their Doubles 1 — Player B"},
+  {id:"c",lb:"Their Doubles 2 — Player A"},
+  {id:"d",lb:"Their Doubles 2 — Player B"}
 ];
 
 function opp(){return[...(O[tm]||[]),...cu]}
@@ -291,7 +291,7 @@ function kcl(t){return{s:"ks",m:"km",w:"kw"}[t]||"km"}
 // ============================================================
 // WIN PROBABILITY MODEL
 // ============================================================
-// Sigmoid: maps strength difference â win probability
+// Sigmoid: maps strength difference → win probability
 // k=5 calibration: equal=50%, +0.10=62%, +0.20=73%, +0.30=82%
 function winProb(ourVal, oppV) {
   return 1 / (1 + Math.exp(-5 * (ourVal - oppV)));
@@ -309,7 +309,7 @@ function singlesWinProb(p, oppName) {
   return winProb(p.v, oppVal(oppName));
 }
 
-// P(win match) = P(win â¥ 2 of 3 lines)
+// P(win match) = P(win ≥ 2 of 3 lines)
 function matchWinProb(pS, pD1, pD2) {
   return pS*pD1 + pS*pD2 + pD1*pD2 - 2*pS*pD1*pD2;
 }
@@ -388,9 +388,9 @@ function draw() {
 
   const n = av.length;
   const c = document.getElementById("cnt");
-  if (n === 5) c.innerHTML = `<span class="ok">â 5 selected â ready</span>`;
-  else if (n < 5) c.innerHTML = `${n}/5 â <span class="bad">tap ${5-n} more</span>`;
-  else c.innerHTML = `${n}/5 â <span class="wrn">tap ${n-5} to deselect</span>`;
+  if (n === 5) c.innerHTML = `<span class="ok">✓ 5 selected — ready</span>`;
+  else if (n < 5) c.innerHTML = `${n}/5 — <span class="bad">tap ${5-n} more</span>`;
+  else c.innerHTML = `${n}/5 — <span class="wrn">tap ${n-5} to deselect</span>`;
 
   document.getElementById("teams").innerHTML = Object.keys(O).map(t =>
     `<button class="tb${tm===t?' on':''}" onclick="selTm('${t}')">${t}</button>`
@@ -438,7 +438,7 @@ function addC() {
   if (nm) {
     // Default strength for manually added: s=0.60, m=0.45, w=0.30
     const vMap = {s:0.60, m:0.45, w:0.30};
-    cu.push({n:nm, t:t, v:vMap[t], info:"Manually added â estimated strength."});
+    cu.push({n:nm, t:t, v:vMap[t], info:"Manually added — estimated strength."});
     document.getElementById("cn").value = "";
     draw();
   }
@@ -471,7 +471,7 @@ function gen() {
     <div class="mw-banner ${mwCl}">
       <div class="mw-label">Chance of winning the match</div>
       <div class="mw-pct" style="color:${mwColor}">${pct(best.pMatch)}</div>
-      <div class="mw-sub" style="color:${mwColor}">${best.pMatch>=0.65?'Strong position â execute the plan':best.pMatch>=0.50?'Slight edge â execution matters':best.pMatch>=0.40?'Toss-up â every point counts':'Tough matchup â fight for every line'}</div>
+      <div class="mw-sub" style="color:${mwColor}">${best.pMatch>=0.65?'Strong position — execute the plan':best.pMatch>=0.50?'Slight edge — execution matters':best.pMatch>=0.40?'Toss-up — every point counts':'Tough matchup — fight for every line'}</div>
     </div>
     <h3 style="font-size:15px;color:#2e5339;text-align:center;margin-bottom:14px">Your Optimal Lineup</h3>
   `;
@@ -501,7 +501,7 @@ function gen() {
             <div class="alt-win ${wpClass(alt.pMatch)}">${pct(alt.pMatch)} <span class="alt-diff">(${diffStr})</span></div>
           </div>
           <div class="alt-detail">
-            Singles: ${alt.sg.n} (${pct(alt.pS)}) Â· D1: ${alt.d1.map(p=>p.n).join(" & ")} (${pct(alt.pD1)}) Â· D2: ${alt.d2.map(p=>p.n).join(" & ")} (${pct(alt.pD2)})
+            Singles: ${alt.sg.n} (${pct(alt.pS)}) · D1: ${alt.d1.map(p=>p.n).join(" & ")} (${pct(alt.pD1)}) · D2: ${alt.d2.map(p=>p.n).join(" & ")} (${pct(alt.pD2)})
           </div>
         </div>`;
     });
