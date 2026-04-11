@@ -1,586 +1,1388 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Lineup Counter">
-<meta name="theme-color" content="#2e5339">
-<title>Lineup Counter — GJTC BBAIR</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f5;color:#2d2d2d;padding:12px 12px 60px;padding-bottom:calc(60px + env(safe-area-inset-bottom));-webkit-text-size-adjust:100%}
-  .card{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-  .sn{background:#2e5339;color:#fff;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-right:8px;flex-shrink:0}
-  .st{font-size:15px;color:#2e5339;font-weight:700;margin-bottom:10px;display:flex;align-items:center}
-  .chip{padding:10px 18px;border-radius:24px;border:2px solid #ddd;background:#fff;color:#aaa;font-size:14px;font-weight:600;cursor:pointer;display:inline-block;margin:3px;transition:all .15s}
-  .chip.on{border-color:#2e5339;background:#2e5339;color:#fff}
-  .chip.cap{opacity:.35;pointer-events:none}
-  .chip .r{font-size:10px;opacity:.6;margin-left:2px}
-  .tb{padding:10px 20px;border-radius:8px;border:2px solid #ddd;background:#fff;color:#666;font-size:14px;font-weight:600;cursor:pointer;margin:3px}
-  .tb.on{border-color:#2e5339;background:#e8f5e9;color:#2e5339}
-  .slot{margin-bottom:12px}
-  .sl{font-size:12px;font-weight:700;color:#555;margin-bottom:5px;display:flex;align-items:center;gap:6px}
-  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
-  .de{background:#ddd}.df{background:#2e5339}
-  .pk{padding:7px 12px;border-radius:8px;border:2px solid #eee;background:#fff;color:#666;font-size:13px;font-weight:600;cursor:pointer;display:inline-block;margin:2px;transition:all .12s}
-  .pk.used{opacity:.2;pointer-events:none}
-  .ts{color:#c62828}.tm{color:#e65100}.tw{color:#2e7d32}
-  .pk.sel.ts{background:#c62828;border-color:#c62828;color:#fff}
-  .pk.sel.tm{background:#e65100;border-color:#e65100;color:#fff}
-  .pk.sel.tw{background:#2e7d32;border-color:#2e7d32;color:#fff}
-  .go{width:100%;padding:14px;border-radius:10px;border:none;background:#2e5339;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:12px}
-  .go:disabled{background:#ccc;cursor:default}
-  .res{border:2px solid #2e5339;box-shadow:0 2px 12px rgba(46,83,57,.18)}
-  .mu{background:#f8faf8;border-radius:10px;padding:14px;margin-bottom:8px;position:relative}
-  .ml{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px}
-  .mn{font-size:20px;font-weight:700;color:#2e5339;margin-top:2px}
-  .mr{font-size:12px;color:#aaa;font-weight:400}
-  .mv{font-size:10px;color:#aaa}
-  .mo{font-size:14px;color:#555;margin-top:2px}
-  .bg{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;color:#fff;margin-left:4px;vertical-align:middle}
-  .bs{background:#c62828}.bm{background:#e65100}.bw{background:#2e7d32}
-  .str{margin-top:12px;padding:12px;background:#fff8e1;border-radius:8px;border:1px solid #ffe082;font-size:13px;color:#5d4037;line-height:1.6}
-  .nt{font-size:12px;color:#aaa;margin-top:5px}
-  .ok{color:#2e7d32;font-weight:600}.bad{color:#c62828}.wrn{color:#e65100}
-  .kn{margin-top:10px;padding:10px;background:#f8f8f8;border-radius:8px}
-  .kl{font-size:11px;font-weight:600;color:#888;margin-bottom:6px}
-  .kt{font-size:12px;padding:3px 8px;border-radius:4px;font-weight:600;display:inline-block;margin:2px}
-  .ks{background:#c6282815;color:#c62828;border:1px solid #c6282830}
-  .km{background:#e6510015;color:#e65100;border:1px solid #e6510030}
-  .kw{background:#2e7d3215;color:#2e7d32;border:1px solid #2e7d3230}
-  .ar{margin-top:8px;display:flex;gap:4px;align-items:center}
-  .ar input{flex:1;padding:8px;border-radius:6px;border:1px solid #ddd;font-size:16px;-webkit-appearance:none}
-  .ar select{padding:8px;border-radius:6px;border:1px solid #ddd;font-size:16px;-webkit-appearance:none;background:#fff}
-  .ar button{padding:8px 14px;border-radius:6px;border:none;background:#2e5339;color:#fff;font-size:14px;cursor:pointer;font-weight:700;-webkit-tap-highlight-color:transparent}
-  .rl{font-size:12px;color:#666;line-height:1.8}
-  .rb{display:block;margin:16px auto;padding:10px 24px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#888;font-size:13px;cursor:pointer}
-  .hidden{display:none}
-  h1{font-size:22px;color:#2e5339;text-align:center}
-  .sub{font-size:13px;color:#888;text-align:center;margin:4px 0 14px}
-  .hw{background:#e8f5e9;border:1px solid #c8e6c9}
-  .hw-t{font-size:13px;font-weight:700;color:#2e5339;margin-bottom:6px}
-  .hw ol{font-size:12px;color:#555;padding-left:20px;line-height:2}
-  .hw-x{font-size:11px;color:#2e5339;cursor:pointer;text-align:right;margin-top:6px}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tennis Lineup">
+  <meta name="theme-color" content="#2E5339">
+  <title>Lineup Counter \u2014 GJTC BBAIR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-  .wp-row{display:flex;align-items:center;gap:8px;margin-top:6px}
-  .wp-bar{flex:1;height:6px;background:#eee;border-radius:3px;overflow:hidden}
-  .wp-fill{height:100%;border-radius:3px;transition:width .3s}
-  .wp-pct{font-size:12px;font-weight:700;min-width:36px;text-align:right}
-  .wp-hi{color:#2e7d32}.wp-md{color:#e65100}.wp-lo{color:#c62828}
-  .fill-hi{background:#2e7d32}.fill-md{background:#e65100}.fill-lo{background:#c62828}
-  .concede{position:absolute;top:8px;right:10px;font-size:9px;font-weight:700;color:#c62828;background:#c6282812;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px}
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+      color: #1a1a1a;
+      line-height: 1.5;
+      padding: max(16px, env(safe-area-inset-left)) 16px max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-right));
+      padding-top: max(16px, env(safe-area-inset-top));
+    }
 
-  .alt{margin-top:14px;border-top:1px solid #eee;padding-top:14px}
-  .alt-h{font-size:12px;font-weight:700;color:#888;margin-bottom:10px}
-  .alt-row{background:#fafafa;border-radius:8px;padding:10px 12px;margin-bottom:6px;cursor:pointer;border:1px solid #eee;transition:all .15s}
-  .alt-row:hover{border-color:#2e5339;background:#f0f7f2}
-  .alt-top{display:flex;justify-content:space-between;align-items:center}
-  .alt-rank{font-size:11px;color:#aaa;font-weight:700;margin-right:6px}
-  .alt-names{font-size:13px;font-weight:600;color:#333}
-  .alt-win{font-size:14px;font-weight:700}
-  .alt-detail{font-size:11px;color:#888;margin-top:4px;display:none}
-  .alt-row.open .alt-detail{display:block}
-  .alt-diff{font-size:10px;color:#aaa;margin-left:4px}
+    .header {
+      margin-bottom: 24px;
+      text-align: center;
+    }
 
-  .mw-banner{text-align:center;padding:14px;border-radius:10px;margin-bottom:14px}
-  .mw-hi{background:#e8f5e9;border:1px solid #c8e6c9}
-  .mw-md{background:#fff8e1;border:1px solid #ffe082}
-  .mw-lo{background:#fce4ec;border:1px solid #ef9a9a}
-  .mw-pct{font-size:32px;font-weight:700}
-  .mw-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
-  .mw-sub{font-size:12px;margin-top:2px}
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2E5339;
+      margin-bottom: 4px;
+    }
 
-  /* Scouting note on opponent */
-  .scout{font-size:11px;color:#888;padding:6px 8px;background:#f8f8f8;border-radius:6px;margin-top:6px;line-height:1.5}
-  .scout b{color:#555}
+    .header p {
+      font-size: 14px;
+      color: #666;
+    }
 
-  /* Data info panel */
-  .data-panel{background:#f0f4f8;border:1px solid #d0d8e0;border-radius:8px;padding:12px;margin-top:10px}
-  .data-panel summary{font-size:12px;font-weight:700;color:#555;cursor:pointer}
-  .data-panel .dp-body{font-size:11px;color:#777;margin-top:8px;line-height:1.7}
-  .data-panel table{width:100%;font-size:10px;border-collapse:collapse;margin-top:6px}
-  .data-panel th{text-align:left;color:#888;padding:3px 6px;border-bottom:1px solid #ddd;font-weight:600}
-  .data-panel td{padding:3px 6px;border-bottom:1px solid #f0f0f0}
+    .last-updated {
+      font-size: 12px;
+      color: #999;
+      margin-top: 8px;
+    }
 
-  /* iPhone-specific fixes */
-  @supports(padding: env(safe-area-inset-bottom)){
-    body{padding-left:calc(12px + env(safe-area-inset-left));padding-right:calc(12px + env(safe-area-inset-right))}
-  }
-  .chip:active,.tb:active,.pk:active,.go:active,.rb:active,.alt-row:active{opacity:.7;transform:scale(0.97)}
-  @media(max-width:390px){
-    .chip{padding:8px 14px;font-size:13px}
-    .pk{padding:6px 10px;font-size:12px}
-    .mn{font-size:18px}
-    .mw-pct{font-size:28px}
-    h1{font-size:20px}
-  }
-</style>
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #2E5339;
+      margin-bottom: 12px;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background-color: #2E5339;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .weeks-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .week-card {
+      padding: 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      touch-action: manipulation;
+    }
+
+    .week-card:active {
+      transform: scale(0.97);
+      background: #f0f0f0;
+    }
+
+    .week-card.selected {
+      border-color: #2E5339;
+      background: #f0f6f3;
+    }
+
+    .week-card.played {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .week-card.played:active {
+      transform: none;
+    }
+
+    .week-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2E5339;
+      margin-bottom: 4px;
+    }
+
+    .week-date {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .week-opponent {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .week-result {
+      font-size: 12px;
+      color: #2E5339;
+      font-weight: 500;
+    }
+
+    .player-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .player-chip {
+      background: #e8f5e9;
+      border: 1px solid #2E5339;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1a1a1a;
+      cursor: pointer;
+      transition: all 0.2s;
+      touch-action: manipulation;
+      position: relative;
+    }
+
+    .player-chip.singles {
+      background: #fff3e0;
+      border-color: #ff6f00;
+    }
+
+    .player-chip.locked::after {
+      content: " \uD83D\uDD12";
+    }
+
+    .player-chip.bye {
+      background: #f5f5f5;
+      border-color: #ccc;
+      color: #999;
+      cursor: default;
+    }
+
+    .player-chip.selectable:active {
+      transform: scale(0.95);
+    }
+
+    .bye-section {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    .bye-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .lineup-slot {
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #2E5339;
+    }
+
+    .slot-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .slot-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .slot-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .suggestion-chip {
+      background: #e8f5e9;
+      border: 1px solid #2E5339;
+      border-radius: 16px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .suggestion-chip:active {
+      transform: scale(0.95);
+    }
+
+    .threat-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .threat-red {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .threat-orange {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    .threat-green {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .opp-chip {
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 2px solid #eee;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-block;
+      transition: all 0.12s;
+    }
+    .opp-chip:active { opacity: 0.7; transform: scale(0.97); }
+    .opp-chip.threat-red { color: #c62828; border-color: #ffcdd2; }
+    .opp-chip.threat-orange { color: #e65100; border-color: #ffe0b2; }
+    .opp-chip.threat-green { color: #2e7d32; border-color: #c8e6c9; background: #e8f5e9; }
+    .opp-chip.selected { color: #fff !important; }
+    .opp-chip.selected.threat-red { background: #c62828; border-color: #c62828; }
+    .opp-chip.selected.threat-orange { background: #e65100; border-color: #e65100; }
+    .opp-chip.selected.threat-green { background: #2e7d32; border-color: #2e7d32; }
+    .opp-chip.used { opacity: 0.2; pointer-events: none; }
+
+    .button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      touch-action: manipulation;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .button-primary {
+      background-color: #2E5339;
+      color: white;
+    }
+
+    .button-primary:active {
+      transform: scale(0.98);
+      background-color: #1e3a27;
+    }
+
+    .button-secondary {
+      background-color: #f0f0f0;
+      color: #1a1a1a;
+      border: 1px solid #ddd;
+    }
+
+    .button-secondary:active {
+      transform: scale(0.98);
+      background-color: #e0e0e0;
+    }
+
+    .button-reset {
+      background-color: transparent;
+      color: #999;
+      border: 1px solid #ddd;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+
+    .results-banner {
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 16px;
+      color: white;
+      font-weight: 600;
+    }
+
+    .results-banner.strong {
+      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+    }
+
+    .results-banner.moderate {
+      background: linear-gradient(135deg, #f57c00 0%, #e65100 100%);
+    }
+
+    .results-banner.weak {
+      background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+    }
+
+    .win-percent {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .banner-message {
+      font-size: 14px;
+      opacity: 0.95;
+    }
+
+    .matchup {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-left: 4px solid #2E5339;
+    }
+
+    .matchup-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .matchup-pair {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .our-players {
+      color: #2E5339;
+      font-weight: 600;
+    }
+
+    .matchup-probability {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .win-bar-container {
+      flex: 1;
+      background: #e0e0e0;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .win-bar-fill {
+      height: 100%;
+      transition: width 0.3s;
+    }
+
+    .win-bar-fill.strong {
+      background-color: #2e7d32;
+    }
+
+    .win-bar-fill.moderate {
+      background-color: #f57c00;
+    }
+
+    .win-bar-fill.weak {
+      background-color: #d32f2f;
+    }
+
+    .win-percent-text {
+      font-size: 13px;
+      font-weight: 600;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .concede-tag {
+      display: inline-block;
+      background: #ffebee;
+      color: #c62828;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .scouting-notes {
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .strategy-section {
+      background: #f0f6f3;
+      border-left: 4px solid #2E5339;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .strategy-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2E5339;
+      margin-bottom: 6px;
+    }
+
+    .strategy-text {
+      font-size: 13px;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .alternatives-section {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+
+    .alternatives-header {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .alternatives-header h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .expand-icon {
+      font-size: 18px;
+      color: #666;
+      transition: transform 0.2s;
+    }
+
+    .alternatives-header.expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    .alternatives-content {
+      display: none;
+      padding: 12px;
+    }
+
+    .alternatives-content.expanded {
+      display: block;
+    }
+
+    .alt-option {
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .alt-option:last-child {
+      margin-bottom: 0;
+    }
+
+    .alt-pairing {
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .alt-diff {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .info-section {
+      background: #f0f6f3;
+      border: 1px solid #2E5339;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+
+    .info-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2E5339;
+      margin-bottom: 8px;
+    }
+
+    .info-text {
+      font-size: 12px;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .info-text strong {
+      color: #2E5339;
+    }
+
+    .faq-section {
+      margin-top: 16px;
+    }
+
+    .faq-item {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .faq-question {
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .faq-question h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .faq-toggle {
+      font-size: 16px;
+      color: #666;
+      transition: transform 0.2s;
+    }
+
+    .faq-item.expanded .faq-toggle {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 12px;
+      border-top: 1px solid #e0e0e0;
+      background: #f8f9fa;
+      font-size: 12px;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .faq-item.expanded .faq-answer {
+      display: block;
+    }
+
+    .season-plan {
+      margin-bottom: 16px;
+    }
+
+    .plan-week-card {
+      background: white;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border-left: 4px solid #ddd;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .plan-week-card.best {
+      border-left-color: #2e7d32;
+      background: #f1f8f4;
+    }
+
+    .plan-week-card.played {
+      opacity: 0.8;
+    }
+
+    .plan-week-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .plan-week-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2E5339;
+    }
+
+    .plan-location {
+      font-size: 11px;
+      color: #999;
+    }
+
+    .plan-opponent {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .plan-win-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .plan-badge-good {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .plan-badge-fair {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    .plan-badge-tough {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .plan-singles {
+      font-size: 12px;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .plan-singles strong {
+      color: #ff6f00;
+      font-weight: 600;
+    }
+
+    .plan-doubles {
+      font-size: 12px;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    .plan-doubles strong {
+      color: #2E5339;
+    }
+
+    .plan-strategy {
+      font-size: 11px;
+      color: #666;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
+
+    .plan-result {
+      font-size: 12px;
+      font-weight: 600;
+      color: #2E5339;
+      margin-top: 8px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .section {
+      margin-bottom: 32px;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: #e0e0e0;
+      margin: 24px 0;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .weeks-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<h1>Lineup Counter</h1>
-<p class="sub">GJTC BBAIR — Spring 2026</p>
-
-<div class="card hw" id="hw">
-  <div class="hw-t">How to use at the courts:</div>
-  <ol>
-    <li>Tap the <strong>5 players who showed up</strong> today</li>
-    <li>Pick which opponent team you're playing</li>
-    <li>When you see their lineup card, tap their players into the Singles, D1, and D2 slots</li>
-    <li>Hit <strong>Generate</strong> — the algorithm tests every possible lineup combo and shows the one most likely to win the match 2-1 or 3-0</li>
-  </ol>
-  <p class="hw-x" onclick="document.getElementById('hw').classList.add('hidden')">Got it ✕</p>
-</div>
-
-<div class="card">
-  <div class="st"><span class="sn">1</span>Who showed up today? (tap 5)</div>
-  <div id="roster"></div>
-  <p class="nt" id="cnt"></p>
-</div>
-
-<div class="card">
-  <div class="st"><span class="sn">2</span>Which team are you playing?</div>
-  <div id="teams"></div>
-  <div class="kn hidden" id="kb">
-    <div class="kl">Their roster — color = how dangerous they are:</div>
-    <div id="kl"></div>
-    <div style="font-size:10px;color:#aaa;margin-top:6px"><span style="color:#c62828">Red = dangerous</span> &nbsp; <span style="color:#e65100">Orange = average</span> &nbsp; <span style="color:#2e7d32">Green = beatable</span></div>
-    <div class="ar">
-      <input id="cn" placeholder="Sub not listed? Add name...">
-      <select id="ct"><option value="s">Strong</option><option value="m" selected>Mid</option><option value="w">Weak</option></select>
-      <button onclick="addC()">+</button>
-    </div>
-    <div style="font-size:10px;color:#aaa;margin-top:4px">Use this if they have a sub player not on the roster above</div>
+  <div class="header">
+    <h1>USTA 2.5 Lineup</h1>
+    <p>Courtside Optimizer</p>
+    <div class="last-updated">April 10, 2026. Team Schedule LOCKED.</div>
   </div>
-</div>
 
-<div class="card hidden" id="s3">
-  <div class="st"><span class="sn">3</span>Enter their lineup card</div>
-  <p style="font-size:11px;color:#888;margin-bottom:10px">Tap the name of each opponent player into the slot they're playing. If a player is already used in another slot, they'll be grayed out.</p>
-  <div id="slots"></div>
-  <button class="go" id="gb" onclick="gen()" disabled>Generate Optimal Lineup</button>
-</div>
-
-<div class="card res hidden" id="res"></div>
-
-<div class="card">
-  <div style="font-size:13px;color:#888;font-weight:700;margin-bottom:8px">What the numbers mean</div>
-  <div class="rl">
-    <div><b>Match Win %</b> = chance of winning 2 out of 3 lines (singles + D1 + D2). This is what matters.</div>
-    <div><b>Line Win %</b> = chance of winning that specific court. <span style="color:#2e5339">Green = 60%+</span>, <span style="color:#e65100">Yellow = 40-60%</span>, <span style="color:#c62828">Red = under 40%</span>.</div>
-    <div><b>"Concede line"</b> = the algorithm intentionally accepts losing that court to dominate the other two. This is often the smartest play.</div>
-    <div><b>Alternative Lineups</b> = tap to expand. If the top 2 lineups are close (within 2-3%), go with your gut.</div>
-    <div style="color:#aaa;font-style:italic;margin-top:4px">Kristin is always placed in D2. Strength values are based on TennisRecord.com dynamic ratings, game win %, and match win % through the current season.</div>
-  </div>
-  <details class="data-panel">
-    <summary>How the strength ratings work</summary>
-    <div class="dp-body">
-      Each player has a <b>strength value</b> (0 to 1) calculated from three data sources:
-      <br>• <b>Game win %</b> (40% weight) — most granular indicator. A player who loses 7-5, 7-6 is very different from 6-0, 6-1.
-      <br>• <b>Dynamic rating</b> (30% weight) — TennisRecord.com's ELO-style estimate based on who you beat.
-      <br>• <b>Match win %</b> (30% weight) — straight W-L record.
-      <br><br><b>Level adjustment:</b> Ashley Rossman's 2025 record (4-11) was entirely at 3.0 level against much stronger opponents (DR 2.48-2.98). Her 2.5-level record is 10-6 (62.5%) — that's what we use.
-      <br><br><b>Blending:</b> 2026 results get 15% weight (small sample), career stats at the correct level get primary weight. DR normalization maps the 2.0-2.5 range for this league.
-      <br><br><b>Head-to-head:</b> Where available, scouting notes include specific past matchups between our players and theirs.
-      <br><br><b>Win probability model:</b> Equal strength = 50/50. A 0.10 strength edge ≈ 62% win chance. A 0.20 edge ≈ 73%. Doubles averages both players with a small chemistry bonus when two top-5 players pair.
-      <br><br><b>Data source:</b> TennisRecord.com profiles, match histories, and team pages. All stats verified with exact DR values to 4 decimal places.
-      <br><b>Last updated:</b> April 8, 2026 (deep data dive — full names, exact DRs, level-adjusted stats, Marian Nelson 2026 update).
+  <!-- STEP 1: SELECT WEEK -->
+  <div id="step1" class="card section">
+    <div class="step-header">
+      <div class="step-number">1</div>
+      <div class="step-title">Which match week?</div>
     </div>
-  </details>
-</div>
+    <div class="weeks-grid" id="weeksGrid"></div>
+  </div>
 
-<button class="rb" onclick="reset()">Reset Everything</button>
+  <!-- STEP 2: SUBSTITUTIONS -->
+  <div id="step2" class="card section hidden">
+    <div class="step-header">
+      <div class="step-number">2</div>
+      <div class="step-title">Anyone need to sub?</div>
+    </div>
+    <div id="rostered"></div>
+    <div class="bye-section">
+      <div class="bye-label">Available to sub in:</div>
+      <div class="player-list" id="availableSubs"></div>
+    </div>
+  </div>
 
-<script>
-// ============================================================
-// PLAYER DATA — DATA-DRIVEN STRENGTH VALUES
-// ============================================================
-// v = composite strength (0-1 scale)
-// Formula: 40% game win%, 30% dynamic rating, 30% match win%
-// Blended: 2026 data (15% weight when available) + 2025 (primary) + career (fallback)
-// s = 1 if top-5 player (small chemistry bonus when two s=1 pair in doubles)
-// k = team rank (1=strongest). Used for display + Kristin constraint.
-//
-// Source: TennisRecord.com profiles + match histories, pulled April 8 2026.
-// 2026 Week 1 results incorporated (3/30: BBAIR 2-1 TPETERS).
-// Deep data dive 4/8/26: Full names, exact DRs, level-adjusted stats from TennisRecord.
-// Ashley's '25 record (4-11) was ALL at 3.0 level — excluded from 2.5 strength calc.
-// Katie & Kristin now have real data (were incorrectly listed as "no data").
+  <!-- STEP 3: OPPONENT LINEUP -->
+  <div id="step3" class="card section hidden">
+    <div class="step-header">
+      <div class="step-number">3</div>
+      <div class="step-title">Enter their lineup card</div>
+    </div>
+    <div id="lineupSlotsContainer"></div>
+  </div>
 
-const P=[
-  {n:"Ashley",   k:1, s:1, v:0.649},  // Ashley Rossman | DR:2.2500 | FORMER 3.0 PLAYER | 2.5-only: 10-6(62.5%MW),58.4%GW | '26:1-0,75%GW(D1 w/Jamie 6-2,6-2)
-  {n:"Jamie",    k:2, s:1, v:0.643},  // Jamie Montgomery | DR:2.2500 | '26:1-0,75%GW(D1 w/Ashley) | '25:3-4,54%GW | Career:11-7(61%MW),57.6%GW | 18 matches
-  {n:"Betsy",    k:3, s:1, v:0.603},  // Betsy Bair | DR:2.2500 | '26:bye wk1 | '25:8-5(62%),52%GW | Career:20-13(61%MW),52.8%GW | 33 matches. Most experienced.
-  {n:"Katie",    k:4, s:1, v:0.433},  // Katie Coleman | DR:2.0491 | '26:bye wk1 | '25:4-8,46%GW | Career:7-9(44%MW),47.1%GW | 16 matches
-  {n:"Sharla",   k:5, s:1, v:0.399},  // Sharla Skillicorn | DR:2.0131 | '26:1-0,50%GW(D2 w/Melissa 6-2,1-6,1-0) | '25:6-15,40%GW | 40 matches. Scrappy 3-setter.
-  {n:"Kristin",  k:6, s:0, v:0.378},  // Kristin Lynch | DR:2.0484 | '26:0-1,14%GW(S1 lost 2-6,0-6 to C.Moore) | '25:7-8,48%GW | Career:14-20,45.7%GW | 34 matches
-  {n:"Marybeth", k:7, s:0, v:0.366},  // Mary Beth Luedtke | DR:2.0100 | '26:bye wk1 | '25:3-6,42.8%GW | 9 matches total
-  {n:"Melissa",  k:8, s:0, v:0.353}   // Melissa Hoaglund | DR:2.0100 | '26:1-0,50%GW(D2 w/Sharla) | '25:1-8,39%GW | Career:5-15(25%MW),39.4%GW | 20 matches
-];
+  <!-- STEP 4: GENERATE -->
+  <div id="step4" class="card section hidden">
+    <button class="button button-primary" id="generateBtn" onclick="generateOptimal()" disabled>Generate Optimal Lineup</button>
+  </div>
 
-// ============================================================
-// OPPONENT DATA — PER-PLAYER STRENGTH VALUES
-// ============================================================
-// Each opponent has individual v (strength) instead of just tier buckets.
-// t = tier label for color coding: s(strong/red), m(mid/orange), w(weak/green)
-// v = data-driven strength value
-// info = scouting note shown in results
+  <!-- RESULTS -->
+  <div id="resultsSection" class="section hidden">
+    <div id="resultsBanner"></div>
+    <div id="resultsContent"></div>
+  </div>
 
-// Opponent data updated with 2026 match results where available.
-// 2026 Week 1 line scores: BBAIR 2-1 TPETERS (3/30/2026)
-// S1: Connie Moore(T) d. Kristin Lynch(B) 6-2 6-0
-// D1: Jamie Montgomery+Ashley Rossman(B) d. Kirby+Biddison(T) 6-2 6-2
-// D2: Sharla Skillicorn+Melissa Hoaglund(B) d. DoughertyLake+Scholl(T) 6-2 1-6 1-0
-// 4/6 BBAIR vs ABEAGLEY scores not yet entered on TennisRecord.
-// RWILLIAMS vs ABEAGLEY 3/30 scores not yet on TennisRecord.
-// Marian Nelson (Ari): 2026 data from CSRC ANDERSON — 1-1, lost S1 1-6,1-6 on 4/4.
+  <!-- INFO SECTIONS -->
+  <div id="infoSection" class="section hidden">
+    <div class="info-section">
+      <div class="info-title">What the numbers mean</div>
+      <div class="info-text">
+        <strong>Match Win %:</strong> Probability we win the overall match (win 2+ of 3 lines).<br>
+        <strong>Line Win %:</strong> Probability we win that specific matchup.<br>
+        <strong>Concede Line:</strong> A matchup we expect to lose (&lt;35%) \u2014 try to dominate elsewhere.
+      </div>
+    </div>
 
-const O={
-  Tia:[
-    {n:"Connie Moore",        t:"s", v:0.584, info:"3/30: Won S1 6-2,6-0 (beat Kristin). '25:12-6(67%). Their go-to singles weapon."},
-    {n:"Jacqueline Biddison", t:"s", v:0.573, info:"3/30: Lost D1 2-6,2-6 (w/Kirby vs Jamie+Ashley — bad pairing). '25:8-3(73%). Still dangerous with right partner."},
-    {n:"Jane Dougherty-Lake", t:"s", v:0.559, info:"3/30: Lost D2 but won set 2 (w/Scholl 2-6,6-1,0-1). '25:9-5(64%). Fights hard in 3-setters."},
-    {n:"Kimberly Haupt",      t:"s", v:0.552, info:"'25:6-5(55%). DR 2.25. No 2026 data yet. Solid and consistent."},
-    {n:"Theresa Scholl",      t:"m", v:0.534, info:"3/30: Lost D2 but won set 2 (w/DL 2-6,6-1,0-1). DR 2.25 but '25:7-11(39%)."},
-    {n:"Tia Peters",          t:"m", v:0.498, info:"'25:11-5(69%). 3-set specialist — came back from 0-6 starts. Didn't play 3/30."},
-    {n:"Stephanie Kirby",     t:"m", v:0.399, info:"3/30: Lost D1 2-6,2-6 (w/Biddison vs Jamie+Ashley). '25:6-12(33%). Weakest active player."},
-    {n:"Tori Thompson",       t:"w", v:0.374, info:"DR 2.16 but zero match data in this league. Complete unknown."}
-  ],
-  Renee:[
-    {n:"Christine Wesolowski",t:"m", v:0.534, info:"'25:4-0(100%). Small sample but undefeated. No 2026 data yet."},
-    {n:"Renee Williams",      t:"m", v:0.489, info:"Captain. DR 2.25. No TennisRecord match data. H2H: beat Sharla+Katie 6-4,6-4 ('25)."},
-    {n:"Tracy Frigetto",      t:"m", v:0.465, info:"Career:4-9(31%). DR 2.25 misleading — loses more than she wins."},
-    {n:"Stacey Marshall",     t:"w", v:0.381, info:"Career: 0-15 (0%). Zero wins ALL-TIME. Auto-target."},
-    {n:"Loreta Silverio",     t:"w", v:0.350, info:"No rating, no data. Brand new player."},
-    {n:"Darcy Case",          t:"w", v:0.299, info:"'25:0-4(0%). Moved down from 3.0 and still struggling."},
-    {n:"Robin Brown",         t:"w", v:0.250, info:"No local match data. Unknown. H2H: lost 6-0,6-3 even with Renee ('25)."},
-    {n:"Katie Sullivan",      t:"w", v:0.250, info:"No local data. H2H: Jamie+Kristin beat her 6-2,7-5 ('25)."}
-  ],
-  Ari:[
-    {n:"Marian Nelson",       t:"s", v:0.650, info:"DR 2.40 — highest in league. '26 update: Won D1 4/2 (0-6,6-2,1-0 w/Gilmore) but LOST S1 4/4 (1-6,1-6) on diff team. Beatable in singles."},
-    {n:"Crystal Murphy",      t:"m", v:0.416, info:"'25:1-9(10%). Was 7-4 in '24 — massive decline. No 2026 data yet."},
-    {n:"Dilara Kilinc",       t:"w", v:0.350, info:"No rating, no history. Complete unknown."},
-    {n:"Kristi Moore",        t:"w", v:0.350, info:"No local match data. Unknown."},
-    {n:"Sarah Moynihan",      t:"w", v:0.350, info:"No match history. Brand new."},
-    {n:"Rhonda deLong",       t:"w", v:0.337, info:"'25:3-20(13%). Career:8-30(21%). H2H: Sharla lost to her 6-0,7-6 in singles('25)."},
-    {n:"Ari Beagley",         t:"w", v:0.329, info:"Captain. '25:1-10(9%). Career:5-17(23%). We beat her twice in '25."}
-  ]
-};
+    <div class="faq-section">
+      <div class="faq-item">
+        <div class="faq-question">
+          <h4>How the strength ratings work</h4>
+          <div class="faq-toggle">â¼</div>
+        </div>
+        <div class="faq-answer">
+          Player and opponent strength ratings (0\u20131.0) come from USTA match records and league history. Ratings are updated weekly and reflect recent performance. Our top 3 (Ashley, Jamie, Betsy) have ~65% win rate as singles players. Opponent ratings account for venue (home/away) and opponent strength. The optimizer factors in doubles synergy when two singles specialists play together (Ashley, Jamie, Betsy).
+        </div>
+      </div>
+    </div>
+  </div>
 
-let av=[],tm="",cu=[],pk={s:"",a:"",b:"",c:"",d:""};
-const SL=[
-  {id:"s",lb:"Their Singles player"},
-  {id:"a",lb:"Their Doubles 1 — Player A"},
-  {id:"b",lb:"Their Doubles 1 — Player B"},
-  {id:"c",lb:"Their Doubles 2 — Player A"},
-  {id:"d",lb:"Their Doubles 2 — Player B"}
-];
+  <!-- SEASON LINEUP PLAN -->
+  <div id="seasonPlanSection" class="section">
+    <div class="card">
+      <div class="card-title">Season Lineup Plan</div>
+      <div class="season-plan" id="seasonPlan"></div>
+    </div>
+  </div>
 
-function opp(){return[...(O[tm]||[]),...cu]}
-function getOpp(nm){return opp().find(x=>x.n===nm)}
-function tier(nm){const p=getOpp(nm);return p?p.t:"m"}
-function oppVal(nm){const p=getOpp(nm);return p?p.v:0.40}
-function tl(t){return{s:"dangerous",m:"average",w:"beatable"}[t]||"average"}
-function tcl(t){return{s:"ts",m:"tm",w:"tw"}[t]||"tm"}
-function bcl(t){return{s:"bs",m:"bm",w:"bw"}[t]||"bm"}
-function kcl(t){return{s:"ks",m:"km",w:"kw"}[t]||"km"}
+  <!-- RESET BUTTON -->
+  <button class="button button-reset" onclick="resetApp()">Start Over</button>
 
-// ============================================================
-// WIN PROBABILITY MODEL
-// ============================================================
-// Sigmoid: maps strength difference → win probability
-// k=5 calibration: equal=50%, +0.10=62%, +0.20=73%, +0.30=82%
-function winProb(ourVal, oppV) {
-  return 1 / (1 + Math.exp(-5 * (ourVal - oppV)));
-}
+  <script>
+    // PLAYER DATA
+    const P = [
+      {n:"Ashley",   k:1, s:1, v:0.649},
+      {n:"Jamie",    k:2, s:1, v:0.646},
+      {n:"Betsy",    k:3, s:1, v:0.631},
+      {n:"Katie",    k:4, s:0, v:0.433},
+      {n:"Sharla",   k:5, s:0, v:0.377},
+      {n:"Kristin",  k:6, s:0, v:0.391},
+      {n:"Marybeth", k:7, s:0, v:0.337},
+      {n:"Melissa",  k:8, s:0, v:0.353}
+    ];
 
-// Doubles: average both players' strengths + small chemistry bonus
-function doublesWinProb(p1, p2, oA, oB) {
-  const ourAvg = (p1.v + p2.v) / 2;
-  const oppAvg = (oppVal(oA) + oppVal(oB)) / 2;
-  const synergy = (p1.s && p2.s) ? 0.015 : 0;
-  return winProb(ourAvg + synergy, oppAvg);
-}
+    // OPPONENT DATA
+    const O = {
+      Tia: [
+        {n:"Connie Moore",        t:"s", v:0.584, info:"3/30: Won S1 6-2,6-0 (beat Kristin). '25:12-6(67%). Their go-to singles weapon."},
+        {n:"Jacqueline Biddison", t:"s", v:0.573, info:"3/30: Lost D1 2-6,2-6 (w/Kirby vs Jamie+Ashley). '25:8-3(73%). Still dangerous with right partner."},
+        {n:"Jane Dougherty-Lake", t:"s", v:0.559, info:"3/30: Lost D2 but won set 2 (w/Scholl 2-6,6-1,0-1). '25:9-5(64%). Fights hard in 3-setters."},
+        {n:"Kimberly Haupt",      t:"s", v:0.552, info:"'25:6-5(55%). DR 2.25. No 2026 data yet. Solid and consistent."},
+        {n:"Theresa Scholl",      t:"m", v:0.534, info:"3/30: Lost D2 but won set 2 (w/DL 2-6,6-1,0-1). DR 2.25 but '25:7-11(39%)."},
+        {n:"Tia Peters",          t:"m", v:0.498, info:"'25:11-5(69%). 3-set specialist \u2014 came back from 0-6 starts. Didn't play 3/30."},
+        {n:"Stephanie Kirby",     t:"m", v:0.399, info:"3/30: Lost D1 2-6,2-6 (w/Biddison vs Jamie+Ashley). '25:6-12(33%). Weakest active player."},
+        {n:"Tori Thompson",       t:"w", v:0.374, info:"DR 2.16 but zero match data in this league. Complete unknown."}
+      ],
+      Renee: [
+        {n:"Christine Wesolowski",t:"m", v:0.534, info:"'25:4-0(100%). Small sample but undefeated. No 2026 data yet."},
+        {n:"Renee Williams",      t:"m", v:0.489, info:"Captain. DR 2.25. No TennisRecord match data. H2H: beat Sharla+Katie 6-4,6-4 ('25)."},
+        {n:"Tracy Frigetto",      t:"m", v:0.465, info:"Career:4-9(31%). DR 2.25 misleading \u2014 loses more than she wins."},
+        {n:"Stacey Marshall",     t:"w", v:0.381, info:"Career: 0-15 (0%). Zero wins ALL-TIME. Auto-target."},
+        {n:"Loreta Silverio",     t:"w", v:0.350, info:"No rating, no data. Brand new player."},
+        {n:"Darcy Case",          t:"w", v:0.299, info:"'25:0-4(0%). Moved down from 3.0 and still struggling."},
+        {n:"Robin Brown",         t:"w", v:0.250, info:"No local match data. Unknown. H2H: lost 6-0,6-3 even with Renee ('25)."},
+        {n:"Katie Sullivan",      t:"w", v:0.250, info:"No local data. H2H: Jamie+Kristin beat her 6-2,7-5 ('25)."}
+      ],
+      Ari: [
+        {n:"Marian Nelson",       t:"s", v:0.662, info:"DR 2.40 \u2014 highest in league. '26: Won D1 4/2 (0-6,6-2,1-0 w/Gilmore), LOST S1 4/4 (1-6,1-6), Won D2 4/6 vs us (6-4,3-6,11-9 w/Kristi). 2-1 in '26. Beatable in singles."},
+        {n:"Dilara Kilinc",       t:"m", v:0.443, info:"4/6: Won S1 6-4,7-5 vs Marybeth. Straight-set win \u2014 clearly competent. Watch out."},
+        {n:"Crystal Murphy",      t:"m", v:0.416, info:"'25:1-9(10%). Was 7-4 in '24 \u2014 massive decline. No 2026 data yet."},
+        {n:"Kristi Moore",        t:"m", v:0.400, info:"4/6: Won D2 6-4,3-6,11-9 TB (w/Marian vs Kristin+Sharla). Carried by Marian but contributed."},
+        {n:"Sarah Moynihan",      t:"w", v:0.280, info:"4/6: Lost D1 1-6,1-6 (w/Rhonda vs Jamie+Betsy). Got destroyed. Very weak."},
+        {n:"Rhonda deLong",       t:"w", v:0.295, info:"'25:3-20(13%). Career:8-30(21%). 4/6: Lost D1 1-6,1-6 (w/Sarah vs Jamie+Betsy). Still terrible."},
+        {n:"Ari Beagley",         t:"w", v:0.329, info:"Captain. '25:1-10(9%). Career:5-17(23%). We beat her twice in '25. Didn't play 4/6."}
+      ]
+    };
 
-function singlesWinProb(p, oppName) {
-  return winProb(p.v, oppVal(oppName));
-}
+    // SCHEDULE & STRATEGY
+    const SCHEDULE = [
+      {w:1, d:"3/30", opp:"Tia", loc:"",  played:true, result:"W 2-1", s:"Kristin",   ros:["Ashley","Jamie","Kristin","Melissa","Sharla"], bye:["Betsy","Katie","Marybeth"]},
+      {w:2, d:"4/6",  opp:"Ari", loc:"Home", played:true, result:"L 1-2", s:"Marybeth", ros:["Betsy","Jamie","Kristin","Marybeth","Sharla"], bye:["Ashley","Katie","Melissa"]},
+      {w:3, d:"4/13", opp:"Renee", loc:"Away", played:false, result:"", s:"Jamie", ros:["Ashley","Jamie","Katie","Marybeth","Melissa"], bye:["Betsy","Kristin","Sharla"], d1:"Ashley+Katie", d2:"Marybeth+Melissa", wp:0.63},
+      {w:4, d:"4/20", opp:"Tia", loc:"Home", played:false, result:"", s:"Betsy", ros:["Ashley","Betsy","Kristin","Melissa","Sharla"], bye:["Jamie","Katie","Marybeth"], d1:"Ashley+Kristin", d2:"Melissa+Sharla", wp:0.42},
+      {w:5, d:"4/27", opp:"Ari", loc:"Away", played:false, result:"", s:"Sharla", ros:["Betsy","Katie","Kristin","Marybeth","Sharla"], bye:["Ashley","Jamie","Melissa"], d1:"Betsy+Katie", d2:"Kristin+Marybeth", wp:0.41},
+      {w:6, d:"5/4",  opp:"Renee", loc:"Home", played:false, result:"", s:"Melissa", ros:["Ashley","Betsy","Jamie","Katie","Melissa"], bye:["Kristin","Marybeth","Sharla"], d1:"Ashley+Jamie", d2:"Betsy+Katie", wp:0.65, best:true},
+      {w:7, d:"5/11", opp:"Tia", loc:"Away", played:false, result:"", s:"Ashley", ros:["Ashley","Betsy","Jamie","Katie","Marybeth"], bye:["Kristin","Melissa","Sharla"], d1:"Betsy+Jamie", d2:"Katie+Marybeth", wp:0.52},
+      {w:8, d:"5/18", opp:"Ari", loc:"Home", played:false, result:"", s:"Katie", ros:["Katie","Kristin","Marybeth","Melissa","Sharla"], bye:["Ashley","Betsy","Jamie"], d1:"Kristin+Sharla", d2:"Marybeth+Melissa", wp:0.33}
+    ];
 
-// P(win match) = P(win ≥ 2 of 3 lines)
-function matchWinProb(pS, pD1, pD2) {
-  return pS*pD1 + pS*pD2 + pD1*pD2 - 2*pS*pD1*pD2;
-}
+    let currentWeek = null;
+    let roster = [];
+    let byes = [];
+    let singlesPlayer = null;
 
-// ============================================================
-// BRUTE FORCE OPTIMIZER
-// ============================================================
-function findOptimalLineups(players, oppLineup) {
-  const hasKristin = players.some(p => p.n === "Kristin");
-  let allLineups = [];
+    function getThreatLevel(val) {
+      if (val >= 0.55) return {badge: "Dangerous", cls: "threat-red"};
+      if (val >= 0.45) return {badge: "Average", cls: "threat-orange"};
+      return {badge: "Beatable", cls: "threat-green"};
+    }
 
-  if (hasKristin) {
-    const kristin = players.find(p => p.n === "Kristin");
-    const others = players.filter(p => p.n !== "Kristin");
+    function winProb(ourVal, oppVal) {
+      return 1 / (1 + Math.exp(-5 * (ourVal - oppVal)));
+    }
 
-    for (let di = 0; di < others.length; di++) {
-      const d2Partner = others[di];
-      const remaining = others.filter((_, i) => i !== di);
+    function doublesWinProb(p1, p2, oA, oB) {
+      const ourAvg = (p1.v + p2.v) / 2;
+      const oppAvg = (oppVal(oA) + oppVal(oB)) / 2;
+      const synergy = (p1.s && p2.s) ? 0.015 : 0;
+      return winProb(ourAvg + synergy, oppAvg);
+    }
 
-      for (let si = 0; si < remaining.length; si++) {
-        const sg = remaining[si];
-        const d1pair = remaining.filter((_, i) => i !== si);
+    function matchWinProb(pS, pD1, pD2) {
+      return pS*pD1 + pS*pD2 + pD1*pD2 - 2*pS*pD1*pD2;
+    }
 
-        allLineups.push({
-          sg: sg,
-          d1: [d1pair[0], d1pair[1]],
-          d2: [d2Partner, kristin]
-        });
+    function oppVal(name) {
+      const allOpps = [...O[currentWeekObj.opp], ...customOpps];
+      const opp = allOpps.find(x => x.n === name);
+      return opp ? opp.v : 0.40;
+    }
+
+    function buildWeeksGrid() {
+      const grid = document.getElementById('weeksGrid');
+      grid.innerHTML = '';
+      SCHEDULE.forEach(week => {
+        const card = document.createElement('div');
+        card.className = 'week-card' + (week.played ? ' played' : '');
+        card.onclick = () => !week.played && selectWeek(week.w);
+        let html = `<div class="week-label">W${week.w}</div>`;
+        html += `<div class="week-date">${week.d}${week.loc ? ' ' + week.loc : ''}</div>`;
+        html += `<div class="week-opponent">vs ${week.opp}</div>`;
+        if (week.played) {
+          html += `<div class="week-result">${week.result}</div>`;
+        }
+        card.innerHTML = html;
+        grid.appendChild(card);
+      });
+    }
+
+    function selectWeek(w) {
+      currentWeek = w;
+      const week = SCHEDULE.find(x => x.w === w);
+      window.currentWeekObj = week;
+      roster = [...week.ros];
+      byes = [...week.bye];
+      singlesPlayer = week.s;
+
+      // Update UI
+      document.getElementById('weeksGrid').querySelectorAll('.week-card').forEach((c, i) => {
+        c.classList.toggle('selected', SCHEDULE[i].w === w);
+      });
+
+      buildStep2();
+      document.getElementById('step2').classList.remove('hidden');
+      buildStep3();
+      document.getElementById('step3').classList.remove('hidden');
+      document.getElementById('step4').classList.remove('hidden');
+      document.getElementById('resultsSection').classList.add('hidden');
+      document.getElementById('infoSection').classList.remove('hidden');
+    }
+
+    function buildStep2() {
+      const rostered = document.getElementById('rostered');
+      rostered.innerHTML = '<div class="slot-label" style="margin-bottom: 12px;">Rostered players:</div>';
+      const list = document.createElement('div');
+      list.className = 'player-list';
+      roster.forEach(p => {
+        const chip = document.createElement('div');
+        if (p === singlesPlayer) {
+          chip.className = 'player-chip singles locked';
+        } else {
+          chip.className = 'player-chip selectable';
+        }
+        chip.textContent = p;
+        if (p !== singlesPlayer) {
+          chip.onclick = () => {
+            roster = roster.filter(x => x !== p);
+            byes.push(p);
+            byes = byes.sort();
+            buildStep2();
+          };
+        }
+        list.appendChild(chip);
+      });
+      rostered.appendChild(list);
+
+      const subSection = document.createElement('div');
+      subSection.className = 'bye-section';
+      subSection.innerHTML = '<div class="bye-label">Tap a bye player to sub in:</div>';
+      const subList = document.createElement('div');
+      subList.className = 'player-list';
+      subList.id = 'availableSubs';
+      byes.forEach(p => {
+        const chip = document.createElement('div');
+        chip.className = 'player-chip bye selectable';
+        chip.textContent = p;
+        chip.onclick = () => {
+          byes = byes.filter(x => x !== p);
+          roster.push(p);
+          roster = roster.sort((a, b) => P.find(x => x.n === a).k - P.find(x => x.n === b).k);
+          buildStep2();
+        };
+        subList.appendChild(chip);
+      });
+      subSection.appendChild(subList);
+      rostered.appendChild(subSection);
+    }
+
+    // Opponent lineup picks (tap-to-pick chips, much better on mobile than text input)
+    let oppPicks = {singles:'', d1a:'', d1b:'', d2a:'', d2b:''};
+    let customOpps = [];
+
+    function buildStep3() {
+      oppPicks = {singles:'', d1a:'', d1b:'', d2a:'', d2b:''};
+      customOpps = [];
+      renderOppSlots();
+    }
+
+    function renderOppSlots() {
+      const container = document.getElementById('lineupSlotsContainer');
+      const oppTeam = [...O[currentWeekObj.opp], ...customOpps];
+      const used = Object.values(oppPicks);
+
+      const slots = [
+        {id:'singles', label:'Their Singles'},
+        {id:'d1a', label:'Their Doubles 1 \u2014 Player A'},
+        {id:'d1b', label:'Their Doubles 1 \u2014 Player B'},
+        {id:'d2a', label:'Their Doubles 2 \u2014 Player A'},
+        {id:'d2b', label:'Their Doubles 2 \u2014 Player B'}
+      ];
+
+      container.innerHTML = slots.map(sl => {
+        const val = oppPicks[sl.id];
+        const filled = !!val;
+        return `<div class="lineup-slot">
+          <div class="slot-label"><span style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;background:${filled?'#2E5339':'#ddd'}"></span>${sl.label}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px">${oppTeam.map(p => {
+            const sel = val === p.n;
+            const u = used.includes(p.n) && !sel;
+            const tCl = p.t === 's' ? 'threat-red' : p.t === 'm' ? 'threat-orange' : 'threat-green';
+            return `<span class="opp-chip ${tCl}${sel?' selected':''}${u?' used':''}" onclick="pickOpp('${sl.id}','${p.n.replace(/'/g,"\\'")}')">
+              ${p.n.split(' ')[0]}
+            </span>`;
+          }).join('')}</div>
+        </div>`;
+      }).join('');
+
+      // Add custom opponent input
+      container.innerHTML += `<div style="display:flex;gap:4px;align-items:center;margin-top:8px">
+        <input id="customOppName" placeholder="Sub not listed?" style="flex:1;padding:8px;border-radius:6px;border:1px solid #ddd;font-size:14px">
+        <select id="customOppTier" style="padding:8px;border-radius:6px;border:1px solid #ddd;font-size:14px"><option value="s">Strong</option><option value="m" selected>Mid</option><option value="w">Weak</option></select>
+        <button onclick="addCustomOpp()" style="padding:8px 14px;border-radius:6px;border:none;background:#2E5339;color:white;font-weight:700;font-size:14px">+</button>
+      </div>`;
+
+      // Enable/disable generate button
+      const allFilled = Object.values(oppPicks).every(v => v);
+      document.getElementById('generateBtn').disabled = !allFilled;
+    }
+
+    function pickOpp(slotId, name) {
+      oppPicks[slotId] = oppPicks[slotId] === name ? '' : name;
+      renderOppSlots();
+    }
+
+    function addCustomOpp() {
+      const nm = document.getElementById('customOppName').value.trim();
+      const t = document.getElementById('customOppTier').value;
+      if (nm) {
+        const vMap = {s:0.60, m:0.45, w:0.30};
+        customOpps.push({n:nm, t:t, v:vMap[t], info:"Manually added \u2014 estimated strength."});
+        document.getElementById('customOppName').value = '';
+        renderOppSlots();
       }
     }
-  } else {
-    const n = players.length;
-    for (let si = 0; si < n; si++) {
-      const rest = players.filter((_, i) => i !== si);
-      for (let d1a = 0; d1a < rest.length - 1; d1a++) {
-        for (let d1b = d1a + 1; d1b < rest.length; d1b++) {
-          const d2 = rest.filter((_, i) => i !== d1a && i !== d1b);
-          allLineups.push({ sg: players[si], d1: [rest[d1a], rest[d1b]], d2: [d2[0], d2[1]] });
+
+    function getLineupFromUI() {
+      const {singles, d1a, d1b, d2a, d2b} = oppPicks;
+      if (!singles || !d1a || !d1b || !d2a || !d2b) {
+        alert('Tap all 5 opponent players into their slots first.');
+        return null;
+      }
+      return {singles, d1a, d1b, d2a, d2b};
+    }
+
+    function generateOptimal() {
+      const lineup = getLineupFromUI();
+      if (!lineup) return;
+
+      const oppTeam = O[currentWeekObj.opp];
+
+      // Generate all candidate lineups (if singles is locked, only test doubles splits)
+      const candidates = [];
+      const singlesObj = P.find(x => x.n === singlesPlayer);
+
+      if (!singlesObj) {
+        alert('Singles player not found.');
+        return;
+      }
+
+      // Doubles pool (everyone except singles player)
+      let doublesPool = roster.filter(x => x !== singlesPlayer);
+
+      // If Kristin is in pool, she must be D2
+      const kristinInPool = doublesPool.includes('Kristin');
+
+      if (kristinInPool) {
+        doublesPool = doublesPool.filter(x => x !== 'Kristin');
+        // Generate all C(n, 2) pairs from the n-1 players, then Kristin is always 2nd in D2
+        for (let i = 0; i < doublesPool.length; i++) {
+          for (let j = i + 1; j < doublesPool.length; j++) {
+            const d1_p1 = doublesPool[i];
+            const d1_p2 = doublesPool[j];
+            const d2_pool = doublesPool.filter(x => x !== d1_p1 && x !== d1_p2);
+            for (let k = 0; k < d2_pool.length; k++) {
+              const d2_p1 = d2_pool[k];
+              candidates.push({
+                singles: singlesPlayer,
+                d1: [d1_p1, d1_p2],
+                d2: [d2_p1, 'Kristin']
+              });
+            }
+          }
+        }
+      } else {
+        for (let i = 0; i < doublesPool.length; i++) {
+          for (let j = i + 1; j < doublesPool.length; j++) {
+            const d1_p1 = doublesPool[i];
+            const d1_p2 = doublesPool[j];
+            const d2_pool = doublesPool.filter(x => x !== d1_p1 && x !== d1_p2);
+            for (let k = 0; k < d2_pool.length; k++) {
+              for (let l = k + 1; l < d2_pool.length; l++) {
+                const d2_p1 = d2_pool[k];
+                const d2_p2 = d2_pool[l];
+                candidates.push({
+                  singles: singlesPlayer,
+                  d1: [d1_p1, d1_p2],
+                  d2: [d2_p1, d2_p2]
+                });
+              }
+            }
+          }
         }
       }
+
+      // Score candidates
+      candidates.forEach(c => {
+        const singleObj = P.find(x => x.n === c.singles);
+        const d1_1 = P.find(x => x.n === c.d1[0]);
+        const d1_2 = P.find(x => x.n === c.d1[1]);
+        const d2_1 = P.find(x => x.n === c.d2[0]);
+        const d2_2 = P.find(x => x.n === c.d2[1]);
+
+        const singleProb = winProb(singleObj.v, oppVal(lineup.singles));
+        const d1Prob = doublesWinProb(d1_1, d1_2, lineup.d1a, lineup.d1b);
+        const d2Prob = doublesWinProb(d2_1, d2_2, lineup.d2a, lineup.d2b);
+        const matchProb = matchWinProb(singleProb, d1Prob, d2Prob);
+
+        // Preferred pairing tiebreaker
+        let preferBonus = 0;
+        const d1_coreCount = (d1_1.s || 0) + (d1_2.s || 0);
+        const d2_coreCount = (d2_1.s || 0) + (d2_2.s || 0);
+        if (d1_coreCount === 2 && d2_coreCount === 0) {
+          preferBonus = 0.001;
+        }
+
+        c.matchProb = matchProb + preferBonus;
+        c.singleProb = singleProb;
+        c.d1Prob = d1Prob;
+        c.d2Prob = d2Prob;
+      });
+
+      // Sort by match prob descending
+      candidates.sort((a, b) => b.matchProb - a.matchProb);
+
+      const optimal = candidates[0];
+      const top3 = candidates.slice(0, 3);
+
+      displayResults(optimal, top3, lineup);
     }
-  }
 
-  const evaluated = allLineups.map(lu => {
-    const pS = singlesWinProb(lu.sg, oppLineup.s);
-    const pD1 = doublesWinProb(lu.d1[0], lu.d1[1], oppLineup.a, oppLineup.b);
-    const pD2 = doublesWinProb(lu.d2[0], lu.d2[1], oppLineup.c, oppLineup.d);
-    const pMatch = matchWinProb(pS, pD1, pD2);
-    return { ...lu, pS, pD1, pD2, pMatch };
-  });
+    function displayResults(optimal, top3, opponentLineup) {
+      const banner = document.getElementById('resultsBanner');
+      const mp = optimal.matchProb;
+      let cls = 'weak';
+      let msg = 'Tough matchup. Grind mode.';
+      if (mp >= 0.6) {
+        cls = 'strong';
+        msg = 'We\u2019ve got this.';
+      } else if (mp >= 0.4) {
+        cls = 'moderate';
+        msg = 'Competitive match. Execution matters.';
+      }
+      banner.className = 'results-banner ' + cls;
+      banner.innerHTML = `<div class="win-percent">${(mp * 100).toFixed(0)}%</div><div class="banner-message">${msg}</div>`;
 
-  // Deduplicate (pair order doesn't matter)
-  const unique = [];
-  const seen = new Set();
-  for (const lu of evaluated) {
-    const key = lu.sg.n + "|" +
-      [lu.d1[0].n, lu.d1[1].n].sort().join(",") + "|" +
-      [lu.d2[0].n, lu.d2[1].n].sort().join(",");
-    if (!seen.has(key)) { seen.add(key); unique.push(lu); }
-  }
+      let html = '<div class="card"><div style="font-size: 16px; font-weight: 600; color: #2E5339; margin-bottom: 16px;">Your Optimal Lineup</div>';
 
-  unique.sort((a, b) => b.pMatch - a.pMatch);
-  return unique;
-}
+      const oppTeam = [...O[currentWeekObj.opp], ...customOpps];
+      const singlesOpp = oppTeam.find(x => x.n === opponentLineup.singles);
+      const d1aOpp = oppTeam.find(x => x.n === opponentLineup.d1a);
+      const d1bOpp = oppTeam.find(x => x.n === opponentLineup.d1b);
+      const d2aOpp = oppTeam.find(x => x.n === opponentLineup.d2a);
+      const d2bOpp = oppTeam.find(x => x.n === opponentLineup.d2b);
 
-// ============================================================
-// UI
-// ============================================================
-function draw() {
-  const full = av.length >= 5;
-  document.getElementById("roster").innerHTML = P.map(p => {
-    const on = av.includes(p.n);
-    const cap = !on && full;
-    return `<span class="chip${on?' on':''}${cap?' cap':''}" onclick="tog('${p.n}')">${p.n}<span class="r">#${p.k}</span></span>`;
-  }).join("");
+      // Singles matchup
+      const threat1 = getThreatLevel(singlesOpp?.v || 0.5);
+      html += `<div class="matchup">
+        <div class="matchup-label">SINGLES</div>
+        <div class="matchup-pair"><span class="our-players">${optimal.singles}</span> vs ${opponentLineup.singles} <span class="threat-badge ${threat1.cls}">${threat1.badge}</span></div>
+        <div class="matchup-probability">
+          <div class="win-bar-container"><div class="win-bar-fill ${optimal.singleProb >= 0.6 ? 'strong' : optimal.singleProb >= 0.4 ? 'moderate' : 'weak'}" style="width: ${optimal.singleProb * 100}%"></div></div>
+          <div class="win-percent-text">${(optimal.singleProb * 100).toFixed(0)}%</div>
+        </div>
+        ${optimal.singleProb < 0.35 ? '<div class="concede-tag">CONCEDE LINE</div>' : ''}
+        <div class="scouting-notes">${singlesOpp?.info || 'Limited info.'}</div>
+      </div>`;
 
-  const n = av.length;
-  const c = document.getElementById("cnt");
-  if (n === 5) c.innerHTML = `<span class="ok">✓ 5 selected — ready</span>`;
-  else if (n < 5) c.innerHTML = `${n}/5 — <span class="bad">tap ${5-n} more</span>`;
-  else c.innerHTML = `${n}/5 — <span class="wrn">tap ${n-5} to deselect</span>`;
+      // D1 matchup
+      const threat2 = getThreatLevel(Math.max(d1aOpp?.v || 0.5, d1bOpp?.v || 0.5));
+      html += `<div class="matchup">
+        <div class="matchup-label">DOUBLES 1</div>
+        <div class="matchup-pair"><span class="our-players">${optimal.d1[0]} + ${optimal.d1[1]}</span> vs ${opponentLineup.d1a} + ${opponentLineup.d1b} <span class="threat-badge ${threat2.cls}">${threat2.badge}</span></div>
+        <div class="matchup-probability">
+          <div class="win-bar-container"><div class="win-bar-fill ${optimal.d1Prob >= 0.6 ? 'strong' : optimal.d1Prob >= 0.4 ? 'moderate' : 'weak'}" style="width: ${optimal.d1Prob * 100}%"></div></div>
+          <div class="win-percent-text">${(optimal.d1Prob * 100).toFixed(0)}%</div>
+        </div>
+        ${optimal.d1Prob < 0.35 ? '<div class="concede-tag">CONCEDE LINE</div>' : ''}
+        <div class="scouting-notes">
+          ${d1aOpp?.info || 'Limited info.'}<br>
+          ${d1bOpp?.info || 'Limited info.'}
+        </div>
+      </div>`;
 
-  document.getElementById("teams").innerHTML = Object.keys(O).map(t =>
-    `<button class="tb${tm===t?' on':''}" onclick="selTm('${t}')">${t}</button>`
-  ).join("");
+      // D2 matchup
+      const threat3 = getThreatLevel(Math.max(d2aOpp?.v || 0.5, d2bOpp?.v || 0.5));
+      html += `<div class="matchup">
+        <div class="matchup-label">DOUBLES 2</div>
+        <div class="matchup-pair"><span class="our-players">${optimal.d2[0]} + ${optimal.d2[1]}</span> vs ${opponentLineup.d2a} + ${opponentLineup.d2b} <span class="threat-badge ${threat3.cls}">${threat3.badge}</span></div>
+        <div class="matchup-probability">
+          <div class="win-bar-container"><div class="win-bar-fill ${optimal.d2Prob >= 0.6 ? 'strong' : optimal.d2Prob >= 0.4 ? 'moderate' : 'weak'}" style="width: ${optimal.d2Prob * 100}%"></div></div>
+          <div class="win-percent-text">${(optimal.d2Prob * 100).toFixed(0)}%</div>
+        </div>
+        ${optimal.d2Prob < 0.35 ? '<div class="concede-tag">CONCEDE LINE</div>' : ''}
+        <div class="scouting-notes">
+          ${d2aOpp?.info || 'Limited info.'}<br>
+          ${d2bOpp?.info || 'Limited info.'}
+        </div>
+      </div>`;
 
-  const kb = document.getElementById("kb");
-  if (tm) {
-    kb.classList.remove("hidden");
-    document.getElementById("kl").innerHTML = opp().map(p =>
-      `<span class="kt ${kcl(p.t)}">${p.n}</span>`
-    ).join("");
-  } else kb.classList.add("hidden");
+      // Strategy explanation
+      const concededLines = [optimal.singleProb, optimal.d1Prob, optimal.d2Prob].filter(x => x < 0.35).length;
+      let strategy = '';
+      if (concededLines >= 2) {
+        strategy = 'Grind mode: We\u2019re conceding 2+ lines. Focus on executing the one we can win and staying competitive on the others.';
+      } else if (concededLines === 1) {
+        const winLines = [optimal.singleProb, optimal.d1Prob, optimal.d2Prob].filter(x => x >= 0.55).length;
+        if (winLines >= 2) {
+          strategy = 'Concede \u0026 dominate: Target the line we can\u2019t win, then execute flawlessly on our two strong matchups.';
+        } else {
+          strategy = 'Split mode: We\u2019ve got one clear line and one coin-flip. Concede the weakest and focus on consistency.';
+        }
+      } else {
+        const strongCount = [optimal.singleProb, optimal.d1Prob, optimal.d2Prob].filter(x => x >= 0.55).length;
+        if (strongCount === 3) {
+          strategy = 'Sweep: We\u2019re favored on all three lines. Finish with authority.';
+        } else {
+          strategy = 'Balanced approach: No dominant lines, but no serious holes either. Execution \u0026 momentum will decide it.';
+        }
+      }
 
-  const s3 = document.getElementById("s3");
-  if (tm && n === 5) { s3.classList.remove("hidden"); drawPk(); }
-  else s3.classList.add("hidden");
+      html += `<div class="strategy-section">
+        <div class="strategy-title">STRATEGY</div>
+        <div class="strategy-text">${strategy}</div>
+      </div>`;
 
-  document.getElementById("res").classList.add("hidden");
-}
-
-function drawPk() {
-  const ops = opp(), used = Object.values(pk);
-  document.getElementById("slots").innerHTML = SL.map(sl => {
-    const v = pk[sl.id], filled = !!v;
-    return `<div class="slot"><div class="sl"><span class="dot ${filled?'df':'de'}"></span>${sl.lb}</div><div>${
-      ops.map(p => {
-        const sel = v === p.n, u = used.includes(p.n) && !sel;
-        return `<span class="pk ${tcl(p.t)}${sel?' sel':''}${u?' used':''}" onclick="pick('${sl.id}','${p.n}')">${p.n}</span>`;
-      }).join("")
-    }</div></div>`;
-  }).join("");
-  document.getElementById("gb").disabled = !(pk.s && pk.a && pk.b && pk.c && pk.d);
-}
-
-function tog(nm) {
-  if (av.includes(nm)) av = av.filter(x => x !== nm);
-  else if (av.length < 5) av.push(nm);
-  draw();
-}
-
-function selTm(t) { tm = t; cu = []; pk = {s:"",a:"",b:"",c:"",d:""}; draw(); }
-
-function addC() {
-  const nm = document.getElementById("cn").value.trim(), t = document.getElementById("ct").value;
-  if (nm) {
-    // Default strength for manually added: s=0.60, m=0.45, w=0.30
-    const vMap = {s:0.60, m:0.45, w:0.30};
-    cu.push({n:nm, t:t, v:vMap[t], info:"Manually added — estimated strength."});
-    document.getElementById("cn").value = "";
-    draw();
-  }
-}
-
-function pick(slot, nm) { pk[slot] = pk[slot] === nm ? "" : nm; drawPk(); }
-
-// ============================================================
-// RESULTS
-// ============================================================
-function wpClass(p) { return p >= 0.60 ? "wp-hi" : p >= 0.40 ? "wp-md" : "wp-lo"; }
-function fillClass(p) { return p >= 0.60 ? "fill-hi" : p >= 0.40 ? "fill-md" : "fill-lo"; }
-function pct(p) { return Math.round(p * 100) + "%"; }
-
-function gen() {
-  const players = P.filter(p => av.includes(p.n)).sort((x, y) => x.k - y.k);
-  if (players.length !== 5) return;
-
-  const oppLineup = {s: pk.s, a: pk.a, b: pk.b, c: pk.c, d: pk.d};
-  const ranked = findOptimalLineups(players, oppLineup);
-  const best = ranked[0];
-
-  const r = document.getElementById("res");
-  r.classList.remove("hidden");
-
-  const mwCl = best.pMatch >= 0.60 ? "mw-hi" : best.pMatch >= 0.40 ? "mw-md" : "mw-lo";
-  const mwColor = best.pMatch >= 0.60 ? "#2e7d32" : best.pMatch >= 0.40 ? "#e65100" : "#c62828";
-
-  let html = `
-    <div class="mw-banner ${mwCl}">
-      <div class="mw-label">Chance of winning the match</div>
-      <div class="mw-pct" style="color:${mwColor}">${pct(best.pMatch)}</div>
-      <div class="mw-sub" style="color:${mwColor}">${best.pMatch>=0.65?'Strong position — execute the plan':best.pMatch>=0.50?'Slight edge — execution matters':best.pMatch>=0.40?'Toss-up — every point counts':'Tough matchup — fight for every line'}</div>
-    </div>
-    <h3 style="font-size:15px;color:#2e5339;text-align:center;margin-bottom:14px">Your Optimal Lineup</h3>
-  `;
-
-  // Line cards with scouting notes
-  html += lineCard("Singles", best.sg, pk.s, best.pS);
-  html += lineCard("Doubles 1", best.d1, [pk.a, pk.b], best.pD1);
-  html += lineCard("Doubles 2", best.d2, [pk.c, pk.d], best.pD2);
-
-  // Strategy
-  html += strategyExplain(best);
-
-  // Alternatives
-  if (ranked.length > 1) {
-    html += `<div class="alt"><div class="alt-h">Other Options (tap to expand)</div>`;
-    const alts = ranked.slice(1, 4);
-    alts.forEach((alt, i) => {
-      const diff = alt.pMatch - best.pMatch;
-      const diffStr = diff === 0 ? "same" : (diff > 0 ? "+" : "") + Math.round(diff*100) + "%";
-      html += `
-        <div class="alt-row" onclick="this.classList.toggle('open')">
-          <div class="alt-top">
-            <div>
-              <span class="alt-rank">#${i+2}</span>
-              <span class="alt-names">${alt.sg.n} / ${alt.d1.map(p=>p.n).join("+")} / ${alt.d2.map(p=>p.n).join("+")}</span>
-            </div>
-            <div class="alt-win ${wpClass(alt.pMatch)}">${pct(alt.pMatch)} <span class="alt-diff">(${diffStr})</span></div>
+      // Alternatives
+      if (top3.length > 1) {
+        html += `<div class="alternatives-section">
+          <div class="alternatives-header" onclick="this.parentElement.querySelector('.alternatives-content').classList.toggle('expanded'); this.classList.toggle('expanded')">
+            <h3>Alternative Lineups (Top 3)</h3>
+            <div class="expand-icon">â¼</div>
           </div>
-          <div class="alt-detail">
-            Singles: ${alt.sg.n} (${pct(alt.pS)}) · D1: ${alt.d1.map(p=>p.n).join(" & ")} (${pct(alt.pD1)}) · D2: ${alt.d2.map(p=>p.n).join(" & ")} (${pct(alt.pD2)})
-          </div>
-        </div>`;
+          <div class="alternatives-content">`;
+
+        for (let i = 1; i < top3.length; i++) {
+          const alt = top3[i];
+          const diff = ((alt.matchProb - optimal.matchProb) * 100).toFixed(1);
+          html += `<div class="alt-option">
+            <div class="alt-pairing">D1: ${alt.d1[0]} + ${alt.d1[1]} | D2: ${alt.d2[0]} + ${alt.d2[1]}</div>
+            <div class="alt-diff">Match win: ${(alt.matchProb * 100).toFixed(0)}% (${diff > 0 ? '+' : ''}${diff}% vs optimal)</div>
+          </div>`;
+        }
+        html += '</div></div>';
+      }
+
+      html += '</div>';
+      document.getElementById('resultsContent').innerHTML = html;
+      document.getElementById('resultsSection').classList.remove('hidden');
+      window.scrollTo(0, document.getElementById('resultsBanner').offsetTop - 100);
+    }
+
+    function buildSeasonPlan() {
+      const plan = document.getElementById('seasonPlan');
+      plan.innerHTML = '';
+      SCHEDULE.forEach(week => {
+        const div = document.createElement('div');
+        div.className = 'plan-week-card' + (week.played ? ' played' : '') + (week.best ? ' best' : '');
+
+        let html = `<div class="plan-week-header">
+          <div>
+            <div class="plan-week-label">Week ${week.w} \u2014 ${week.d}</div>
+            <div class="plan-location">${week.loc || 'Away'}</div>
+          </div>`;
+
+        if (week.played) {
+          html += `<div style="font-size: 12px; font-weight: 600; color: #2E5339;">${week.result}</div>`;
+        }
+        html += `</div>`;
+
+        html += `<div class="plan-opponent">vs ${week.opp}</div>`;
+
+        if (!week.played) {
+          const badge = week.wp >= 0.6 ? 'plan-badge-good' : week.wp >= 0.4 ? 'plan-badge-fair' : 'plan-badge-tough';
+          const badgeText = week.wp >= 0.6 ? 'Favored' : week.wp >= 0.4 ? 'Competitive' : 'Tough';
+          html += `<div class="plan-win-badge ${badge}">${badgeText} ${(week.wp * 100).toFixed(0)}%</div>`;
+          html += `<div class="plan-singles"><strong>${week.s}</strong> \u2014 Singles</div>`;
+          html += `<div class="plan-doubles">D1: <strong>${week.d1}</strong> &nbsp;|&nbsp; D2: <strong>${week.d2}</strong></div>`;
+          html += `<div class="plan-strategy">Strategy: ${week.wp >= 0.6 ? 'Execute to sweep.' : week.wp >= 0.4 ? 'Control momentum.' : 'Grind \u0026 stay close.'}</div>`;
+        } else {
+          html += `<div class="plan-result">${week.result}</div>`;
+        }
+
+        if (week.bye && week.bye.length > 0) {
+          html += `<div style="font-size: 11px; color: #999; margin-top: 8px;">Byes: ${week.bye.join(', ')}</div>`;
+        }
+
+        div.innerHTML = html;
+        plan.appendChild(div);
+      });
+    }
+
+    function resetApp() {
+      currentWeek = null;
+      window.currentWeekObj = null;
+      roster = [];
+      byes = [];
+      singlesPlayer = null;
+
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step3').classList.add('hidden');
+      document.getElementById('step4').classList.add('hidden');
+      document.getElementById('resultsSection').classList.add('hidden');
+      document.getElementById('infoSection').classList.add('hidden');
+
+      document.getElementById('weeksGrid').querySelectorAll('.week-card').forEach(c => {
+        c.classList.remove('selected');
+      });
+
+      window.scrollTo(0, 0);
+    }
+
+    // Initialize
+    buildWeeksGrid();
+    buildSeasonPlan();
+
+    // Setup FAQ toggles
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.faq-question')) {
+        const item = e.target.closest('.faq-item');
+        item.classList.toggle('expanded');
+      }
     });
-    html += `<p style="font-size:10px;color:#aaa;margin-top:6px;text-align:center">${ranked.length} lineups tested</p></div>`;
-  }
-
-  r.innerHTML = html;
-  r.scrollIntoView({behavior:"smooth", block:"start"});
-}
-
-function lineCard(label, players, oppNames, winP) {
-  const isArr = Array.isArray(players);
-  const name = isArr ? players.map(p => p.n).join(" & ") : players.n;
-  const oppNamesArr = Array.isArray(oppNames) ? oppNames : [oppNames];
-  const oppText = oppNamesArr.join(" & ");
-
-  // Get tier for the opponent side
-  let oppTier;
-  if (oppNamesArr.length === 1) {
-    oppTier = tier(oppNamesArr[0]);
-  } else {
-    const avg = (oppVal(oppNamesArr[0]) + oppVal(oppNamesArr[1])) / 2;
-    oppTier = avg >= 0.55 ? "s" : avg >= 0.40 ? "m" : "w";
-  }
-
-  const concede = winP < 0.35;
-
-  // Scouting notes for opponents in this matchup
-  const notes = oppNamesArr.map(n => {
-    const p = getOpp(n);
-    return p && p.info ? `<b>${n.split(" ")[0]}:</b> ${p.info}` : null;
-  }).filter(Boolean);
-
-  return `<div class="mu">
-    ${concede ? '<div class="concede">Concede line</div>' : ''}
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div><div class="ml">${label}</div><div class="mn">${name}</div></div>
-      <div style="text-align:right"><div class="mv">vs</div><div class="mo">${oppText}<span class="bg ${bcl(oppTier)}">${tl(oppTier).toUpperCase()}</span></div></div>
-    </div>
-    <div class="wp-row">
-      <div class="wp-bar"><div class="wp-fill ${fillClass(winP)}" style="width:${Math.round(winP*100)}%"></div></div>
-      <div class="wp-pct ${wpClass(winP)}">${pct(winP)}</div>
-    </div>
-    ${notes.length ? '<div class="scout">' + notes.join('<br>') + '</div>' : ''}
-  </div>`;
-}
-
-function strategyExplain(best) {
-  const lines = [
-    {name:"Singles", wp:best.pS},
-    {name:"D1", wp:best.pD1},
-    {name:"D2", wp:best.pD2}
-  ].sort((a,b) => b.wp - a.wp);
-
-  const strongLines = lines.filter(l => l.wp >= 0.55).map(l => l.name);
-  const weakLines = lines.filter(l => l.wp < 0.40).map(l => l.name);
-
-  let msg = "";
-  if (weakLines.length >= 1 && strongLines.length >= 2) {
-    msg = `<b>Concede & dominate:</b> Accept the ${weakLines.join(" & ")} matchup, lock down ${strongLines.join(" & ")} for the 2-1 win.`;
-  } else if (strongLines.length === 3) {
-    msg = `<b>Sweep opportunity:</b> Favored across all three lines. Stay focused and close it out.`;
-  } else if (strongLines.length >= 2) {
-    msg = `<b>Win path:</b> Favored in ${strongLines.join(" & ")}. Focus energy there, compete hard on the third.`;
-  } else {
-    msg = `<b>Grind mode:</b> No easy lines. This lineup gives the best shot at stealing 2 of 3.`;
-  }
-
-  return `<div class="str">${msg}</div>`;
-}
-
-function reset() {
-  av = []; tm = ""; cu = []; pk = {s:"",a:"",b:"",c:"",d:""};
-  document.getElementById("hw").classList.remove("hidden");
-  document.getElementById("res").classList.add("hidden");
-  draw(); window.scrollTo({top:0, behavior:"smooth"});
-}
-
-draw();
-</script>
+  </script>
 </body>
 </html>
